@@ -1,10 +1,17 @@
-import { Button } from "@/components/ui/button";
+import { trpc, getQueryClient } from "@/trpc/server";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
+import { Client } from "./Client";
 
-const Page = () => {
+const Page = async () => {
+  const queryClient = getQueryClient();
+  void queryClient.prefetchQuery(trpc.createAI.queryOptions({ text: 'Anurag PREFETCH!!!!' }));
+
   return (
-    <div>
-      <Button variant={"destructive"}>Click Me</Button>
-    </div>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <div>
+        <Client />
+      </div>
+    </HydrationBoundary>
   );
 }
 
